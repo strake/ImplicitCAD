@@ -192,13 +192,12 @@ symbolicGetMesh res  (ExtrudeRM r@0 twist scale translate obj2 h@(Left _)) =
 		top_tris = map flipTri $ [((a1,a2,h' (a1,a2) -r+dh a1 a2), (b1,b2,h' (b1,b2) -r+dh b1 b2), (c1,c2,h' (c1,c2)-r+dh c1 c2)) 
 				| ((a1,a2),(b1,b2),(c1,c2)) <- fill_tris]
 		-- Mesh modifiers in individual components
-		k = 2*pi/360
 		fx :: ℝ3 -> ℝ
 		fx (x,y,z) = let (tx,ty) = translate' z in
-			scale' z *((x+tx)*cos(k*twist' z) + (y+ty)*sin(k*twist' z))
+			scale' z *((x+tx)*cos(twist' z) + (y+ty)*sin(twist' z))
 		fy :: ℝ3 -> ℝ
 		fy (x,y,z) =let (tx,ty) = translate' z in
-			scale' z *((x+tx)*sin(k*twist' z) - (y+ty)*cos(k*twist' z))
+			scale' z *((x+tx)*sin(twist' z) - (y+ty)*cos(twist' z))
 		-- function to transform a triangle
 		transformTriangle :: (ℝ3,ℝ3,ℝ3) -> (ℝ3,ℝ3,ℝ3)
 		transformTriangle (a@(_,_,z1), b@(_,_,z2), c@(_,_,z3)) = 
