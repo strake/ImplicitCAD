@@ -9,6 +9,8 @@
 -- We just want to export the instance...
 module Graphics.Implicit.Export.SymbolicObj3 (symbolicGetMesh) where
 
+import Data.VectorSpace;
+
 import Graphics.Implicit.Definitions
 
 import Graphics.Implicit.Export.Definitions
@@ -49,6 +51,19 @@ symbolicGetMesh res (Scale3 s obj) =
 		scaleTriangle :: (ℝ3, ℝ3, ℝ3) -> (ℝ3, ℝ3, ℝ3)
 		scaleTriangle (a,b,c) = (s ⋯* a, s ⋯* b, s ⋯* c)
 	in map scaleTriangle  mesh
+
+-- A rotated objects mesh is its mesh rotated
+symbolicGetMesh res (Rotate3V θ (ux, uy, uz) obj) =
+	let {
+		rp :: ℝ3 -> ℝ3;
+		rp v = ((ux^2 *(1 - cos θ) +    cos θ, ux*uy*(1 - cos θ) - uz*sin θ, ux*uz*(1 - cos θ) + uy*sin θ) <.> v,
+		        (ux*uy*(1 - cos θ) + uz*sin θ, uy^2 *(1 - cos θ) +    cos θ, uy*uz*(1 - cos θ) - ux*sin θ) <.> v,
+		        (ux*uz*(1 - cos θ) - uy*sin θ, uy*uz*(1 - cos θ) + ux*sin θ, uz^2 *(1 - cos θ) +    cos θ) <.> v);
+		rt :: (ℝ3, ℝ3, ℝ3) -> (ℝ3, ℝ3, ℝ3);
+		rt (v1, v2, v3) = (rp v1, rp v2, rp v3);
+	} in map rt $ symbolicGetMesh res obj;
+
+symbolicGetMesh res (Rotate3 θ obj) = symbolicGetMesh res (Rotate3V (magnitude θ) (normalized θ) obj);
 
 -- A couple triangles make a cube...
 symbolicGetMesh _ (Rect3R 0 (x1,y1,z1) (x2,y2,z2)) = 
