@@ -111,16 +111,6 @@ Library
         Graphics.Implicit.Export.Render.TesselateLoops
         Graphics.Implicit.Export.Render.HandlePolylines
 
-Executable extopenscad
-
-   Main-is: extopenscad.hs
-   ghc-options:
-        -O2 -optc-O3
-        -threaded
-        -rtsopts
-        -funfolding-use-threshold=16 
-        -fspec-constr-count=10
-
 source-repository head
     type:            git
     location:        https://github.com/colah/ImplicitCAD.git
